@@ -1,0 +1,11 @@
+.CheckInput {
+    position: relative;
+    margin-left: 0.50rem !important;
+}
+
+.CheckInput:after {
+    content: "I  understand";
+    position: absolute;
+    top: -15px;
+    left: 30px;
+}

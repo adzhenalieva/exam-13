@@ -1,0 +1,8 @@
+.RatingLine{
+    display: inline-block;
+    width: 130px;
+}
+.RatingLine2{
+    display: inline-block;
+    margin-left: 20px;
+}
