@@ -8,8 +8,9 @@ import AverageRating from "../../components/AverageRating/AverageRating";
 import FeedbackForm from "../../components/FeedbackForm/FeedbackForm";
 import {deleteFeedback, fetchPlaceById} from "../../store/actions/placeActions";
 import GalleryForm from "../../components/GalleryForm/GalleryForm";
-import {fetchGalleries} from "../../store/actions/galleriesActions";
+import {deleteImage, fetchGalleries} from "../../store/actions/galleriesActions";
 import {apiURL} from "../../constants";
+import './Place.css';
 
 
 class Place extends Component {
@@ -29,6 +30,13 @@ class Place extends Component {
         this.props.deleteFeedback(placeId, feedbackId);
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.galleries !== this.props.galleries){
+            this.props.fetchPlaceById(this.props.match.params.id);
+            this.props.fetchGalleries(this.props.match.params.id);
+        }
+    }
+
     averageRating = (data, item) => {
         let ratings = [];
         data.map(feedback => (
@@ -47,6 +55,10 @@ class Place extends Component {
         }
 
         return (sum === 0 && ratingsNum === 0) ? 0 : Math.round((sum / ratingsNum) * 10) / 10;
+    };
+
+    deletePicture = (id, image) => {
+        this.props.deleteImage(id, image);
     };
 
     render() {
@@ -88,8 +100,10 @@ class Place extends Component {
                                     {this.props.galleries.map(gallery => (
                                         gallery.image.map(image => {
                                                 return <div>
-                                                    <img key={image} src={apiURL + "/uploads/" + image}
+                                                    <img className="Gallery" key={image} src={apiURL + "/uploads/" + image}
                                                          alt="morePhotos"/>
+                                                    <p>Loaded by {gallery.user.displayName}</p>
+                                                    {this.props.user && this.props.user.role === "admin" ?  <Button color="danger" onClick={() => this.deletePicture(gallery._id, image)}>Delete</Button> : null}
                                                 </div>
                                             }
                                         )))}
@@ -122,7 +136,7 @@ class Place extends Component {
                             }
                         </Card>
                         {!this.props.user || (this.props.user && this.props.user._id === this.props.place.user) ?
-                            <h5 className="mx-auto my-3">To estimate the recipe and load photos you must ne logged
+                            <h5 className="mx-auto my-3">To estimate the recipe you must ne logged
                                 in!</h5> :
                             <FeedbackForm id={this.props.match.params.id}/>}
                         {!this.props.user ? null : <GalleryForm id={this.props.match.params.id}/>}
@@ -146,7 +160,8 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchPlaceById: id => dispatch(fetchPlaceById(id)),
         deleteFeedback: (placeId, feedbackId) => dispatch(deleteFeedback(placeId, feedbackId)),
-        fetchGalleries: id => dispatch(fetchGalleries(id))
+        fetchGalleries: id => dispatch(fetchGalleries(id)),
+        deleteImage: (id, image) => dispatch(deleteImage(id, image))
     }
 };
 

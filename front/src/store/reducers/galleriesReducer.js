@@ -1,4 +1,5 @@
 import {
+    DELETE_IMAGE_FAILURE, DELETE_IMAGE_SUCCESS,
     FETCH_GALLERY_FAILURE,
     FETCH_GALLERY_SUCCESS,
     SEND_GALLERY_FAILURE,
@@ -27,12 +28,23 @@ const placeReducer = (state = initialState, action) => {
         case SEND_GALLERY_SUCCESS:
             return {
                 ...state,
+                galleries: action.data,
                 error: null,
             };
         case FETCH_GALLERY_FAILURE:
             return {
                 ...state,
                 error: action.error
+            };
+        case DELETE_IMAGE_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case DELETE_IMAGE_SUCCESS:
+            return {
+                ...state,
+                galleries: action.data
             };
         default:
             return state;

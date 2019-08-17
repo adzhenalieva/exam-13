@@ -27,12 +27,7 @@ class GalleryForm extends Component {
 
     submitForm = async event => {
         event.preventDefault();
-        const data = {...this.state};
-        this.props.sendGallery(data.image).then(
-            () => {
-                fetchGalleries(this.props.id);
-            }
-        )
+        this.props.sendGallery(this.state.image);
 
     };
 
@@ -59,6 +54,7 @@ class GalleryForm extends Component {
                         required
                         multiple
                     />
+                    <p>You may upload up to 5 photos at once</p>
                     <FormGroup row>
                         <Col sm={{offset: 2, size: 10}}/>
                         <Button className="ml-3" type="submit" color="primary">Publish</Button>

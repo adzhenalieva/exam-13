@@ -10,14 +10,14 @@ When('я ввожу {string} в поле {string}', (text, fieldName) => {
 });
 
 When('я загружаю картинку {string} в {string}', (image, id) => {
-    I.attachFile({xpath: `//input[@id='${id}']`}, `dataimage/'${image}'`);
+    I.attachFile({xpath: `//input[@id='${id}']`}, `dataimage/${image}`);
 });
 
 When('нажимаю на кнопку {string}', (buttonName) => {
     I.click(`//button[.='${buttonName}']`)
 });
 
-When('нажимаю на чекбокс {string}', (id) => {
+When('я нажимаю на чекбокс {string}', (id) => {
     I.click({xpath: `//input[@id='${id}']`})
 });
 

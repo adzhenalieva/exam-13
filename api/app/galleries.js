@@ -6,6 +6,7 @@ const nanoid = require('nanoid');
 const Gallery = require('../models/Gallery');
 
 const auth = require('../middleware/auth');
+const permit = require('../middleware/permit');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -21,7 +22,10 @@ const upload = multer({storage});
 const router = express.Router();
 
 router.get('/:id', async (req, res) => {
-    Gallery.find({place: req.params.id})
+    Gallery.find({place: req.params.id}).populate({
+        path: "user",
+        select: "displayName"
+    })
         .then(result => {
             if (result) return res.send(result);
             res.sendStatus(404)
@@ -45,5 +49,18 @@ router.post('/', auth, upload.array('image', 5), async (req, res) => {
 
 });
 
-
+router.delete('/:id', [auth, permit('admin')], async (req, res) => {
+    try {
+        let gallery = await Gallery.findById(req.params.id);
+        let images = gallery.image;
+        let index = images.indexOf(req.query.image);
+        images.splice(index, 1);
+        gallery.image = images;
+        await gallery.save()
+            .then(result => res.send({result, message: "Image deleted"}))
+            .catch(error => res.status(400).send(error))
+    } catch (e) {
+        res.status(500).send(e)
+    }
+});
 module.exports = router;

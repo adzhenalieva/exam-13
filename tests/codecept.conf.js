@@ -19,7 +19,7 @@ exports.config = {
         steps: [
             './step_definitions/login',
             './step_definitions/register',
-            './step_definitions/addRecipe',
+            './step_definitions/addPlace',
             './step_definitions/addFeedback',
         ]
     },
