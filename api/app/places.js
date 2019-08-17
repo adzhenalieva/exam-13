@@ -24,21 +24,28 @@ const upload = multer({storage});
 const router = express.Router();
 
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     Place.find()
         .then(result => {
             if (result) return res.send(result);
             res.sendStatus(404)
         })
         .catch(error => res.status(500).send(error));
+
 });
 
 
 router.get('/:id', async (req, res) => {
     Place.findById(req.params.id)
         .then(result => {
-            if (result) return res.send(result);
-            res.sendStatus(404)
+            if (result) {
+                result.feedback.sort((a, b) => {
+                    return new Date(b.datetime) - new Date(a.datetime)
+                });
+                return res.send(result);
+            } else {
+                res.sendStatus(404)
+            }
         })
         .catch(() => res.sendStatus(500));
 });
@@ -61,7 +68,7 @@ router.post('/', auth, upload.single('mainImage'), async (req, res) => {
         place.save()
             .then(result => res.send(result))
             .catch(error => res.status(400).send(error));
-    } else{
+    } else {
         res.status(400).send(error)
     }
 
@@ -105,10 +112,7 @@ router.delete('/:id', [auth, permit('admin')], async (req, res) => {
 router.delete('/feedback/:id', [auth, permit('admin')], async (req, res) => {
     try {
         let place = await Place.findById(req.params.id);
-        let index = place.feedback.findIndex(feedback => {
-            return feedback._id.equals(req.query.id)
-        });
-        place.feedback.splice(index, 1);
+        await place.feedback.id(req.query.id).remove();
         await place.save()
             .then(result => res.send({result, message: "Feedback deleted"}))
             .catch(error => res.status(400).send(error))
