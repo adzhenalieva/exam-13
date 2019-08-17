@@ -86,7 +86,7 @@ class Register extends Component {
                         type="file"
                         onChange={this.fileChangeHandler}
                         error={this.fieldHasError('avatar')}
-                        required
+                 
                     />
                     <FormGroup row>
                         <Col sm={{offset: 2, size: 10}}/>

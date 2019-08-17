@@ -7,7 +7,7 @@ import './Menu.css';
 const UserMenu = ({user, logout}) => (
     <UncontrolledDropdown nav inNavbar>
         <DropdownToggle nav caret>
-            {user.avatar === " " ? <img className="Image" src={apiURL + '/uploads/' + user.avatar} alt="icon"/> :
+            {user.avatar ? <img className="Image" src={apiURL + '/uploads/' + user.avatar} alt="icon"/> :
                 <img className="Image" src={NoImage} alt="icon"/>}
 
             Hello, {user.displayName}
